@@ -17,13 +17,17 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { isEnabled } = draftMode();
-  const { post, morePosts } = await getPostAndMorePosts(params.slug, isEnabled);
+// Define props for the page component
+interface PostPageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+
+export default async function PostPage(props: PostPageProps) {
+  const params = await props.params;
+  const draftModeData = await draftMode();
+  const { post, morePosts } = await getPostAndMorePosts(params.slug, draftModeData.isEnabled);
 
   return (
     <div className="container mx-auto px-5">
